@@ -1,4 +1,4 @@
-# TEST Knowledge control for students with disabilities
+# Knowledge control for students with disabilities
 Проект "Информационная система контроля знаний обучающихся с ограниченными возможностями здоровья"
 
 ## Требования
