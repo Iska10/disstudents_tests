@@ -43,10 +43,15 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "tests.apps.TestsConfig",
     "ckeditor",
-    "ckeditor_uploader"
+    "ckeditor_uploader",
+    "admin_auto_filters",
+    'nested_admin',
+    "admin_numeric_filter",
+    'django_dump_die',
 ]
 
 MIDDLEWARE = [
+    'django_dump_die.middleware.DumpAndDieMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -136,3 +141,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+CKEDITOR_CONFIGS = {
+    'small': {
+        'height': 150,
+    },
+    'default': {
+    },
+}

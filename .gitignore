@@ -5,6 +5,7 @@
 __pycache__
 media
 disstudents_tests_site/static/
+disstudents_tests_site/tests/migrations/
 *.sqlite3
 
 # Backup files #
