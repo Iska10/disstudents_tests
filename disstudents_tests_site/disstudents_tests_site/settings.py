@@ -35,6 +35,7 @@ CKEDITOR_UPLOAD_PATH = 'uploads/'
 # Application definition
 
 INSTALLED_APPS = [
+    'django_dump_die',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -47,7 +48,6 @@ INSTALLED_APPS = [
     "admin_auto_filters",
     'nested_admin',
     "admin_numeric_filter",
-    'django_dump_die',
 ]
 
 MIDDLEWARE = [

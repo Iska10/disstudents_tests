@@ -1,0 +1,58 @@
+{% extends 'tests/layouts/base.html' %}
+
+{% block content %}
+
+{% load static %}
+{% load tests_tags %}
+
+<div class="p-4 p-md-5 mb-4 mt-4 text-black rounded bg-light">
+  <div class="row">
+    <div class="col">
+      <h1 class="display-4 fst-italic">Контроль знаний обучающихся с ОВЗ</h1>
+        <p></p>
+        <div class="index-quote">
+        <figure>
+          <blockquote class="blockquote">
+          «… где бы ни обучался ребенок с ограниченными<br>
+           Возможностями здоровья – в специальном<br>
+           Учерждении или в условиях интеграции – это<br>
+           Должно быть специальное обучение. Только так<br>
+           Можно добиться успешной адаптации ребенка<br>
+           В школе и получения им образования,<br>
+           Которое будет одним из условии его адаптации<br>
+           И интеграции в последующей взрослой жизни.»<br><br>
+            <figcaption class="blockquote-footer text-center">
+              (В. И. Лубовской)
+            </figcaption>
+          </blockquote>
+        </figure>
+        </div>
+  </div>
+    <div class="col-5">
+        <img class="img-fluid" src="{% static 'images/index.png' %}">
+    </div>
+      </div>
+</div>
+
+<div class="row mb-2 row-cols-2">
+  {% get_articles as articles %}
+
+  {% for article in articles %}
+  <div class="col-md-6">
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col p-4 d-flex flex-column position-static">
+        <strong class="d-inline-block mb-2 text-primary">Статья</strong>
+        <h3 class="mb-0">{{ article.title }}</h3>
+        <div class="mb-1 text-muted">{{ article.created_at|date:"DATE_FORMAT" }}</div>
+        <p class="card-text mb-auto">{{ article.get_short_content|striptags|safe  }}</p>
+        <a href="{% url 'article' article.id %}" class="stretched-link">Подробнее -></a>
+      </div>
+      <div class="col d-none d-lg-block">
+        <img width="200px" height="200px" src="{{ article.image.url }}">
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

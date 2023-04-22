@@ -1,0 +1,101 @@
+{% load static %}
+{% load tests_tags %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Контроль знаний | {{ title }}</title>
+
+    <!-- Custom styles -->
+    <link href="{% static 'css/style.css' %}?modified=220420232348" rel="stylesheet">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand fs-3" href="/">Контроль знаний</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            </ul>
+            <form class="d-flex">
+                {% if not request.user.is_authenticated %}
+                <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+                {% else %}
+                <span class="text-white pe-3 pt-2">
+                {% if request.user.first_name or request.user.last_name %}
+                {{ request.user.first_name }} {{request.user.last_name}}
+                {% else %}
+                {{ request.user.username }}
+                {% endif %}
+                </span>
+                <a href="{% url 'logout' %}" class="btn btn-danger">Выйти <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 12L13 12" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M18 15L20.913 12.087V12.087C20.961 12.039 20.961 11.961 20.913 11.913V11.913L18 9" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M16 5V4.5V4.5C16 3.67157 15.3284 3 14.5 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H14.5C15.3284 21 16 20.3284 16 19.5V19.5V19" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+                {% endif %}
+            </form>
+          </div>
+        </div>
+    </nav>
+
+    <main class="wrapper">
+        <div class="row">
+            <div id="sidebar" class="col-sm-2">
+                <div class="flex bg-white" style="border-right:1px solid rgb(221, 221, 221);">
+                    <ul class="list-unstyled ps-0 ms-4 pt-3 fs-6">
+                        {% get_categories as categories %}
+                        {% for category in categories %}
+                        <li class="mb-1">
+                        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#category-{{ category.id }}-collapse" aria-expanded="false">
+                            <span class="fs-6">{{ category.title }}</span>
+                        </button>
+                        <div class="collapse" id="category-{{ category.id }}-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                                {% for test in category.tests %}
+                                <li><a href="#" class="link-dark rounded">{{ test.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        </li>
+                        {% endfor %}
+                        <li class="border-top my-3"></li>
+                        <li class="mb-1">
+                        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#articles-collapse" aria-expanded="true">
+                            <span class="fs-6">Статьи</span>
+                        </button>
+                        <div class="collapse show" id="articles-collapse">
+                            {% get_articles as articles %}
+
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                            {% for article in articles %}
+                                <li><a href="{% url 'article' article.id %}" class="link-dark rounded">{{ article.title }}</a></li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="content" class="col">
+                <div class="container-fluid" style="padding-right:15%">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>

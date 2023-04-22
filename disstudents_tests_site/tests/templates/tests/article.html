@@ -1,0 +1,10 @@
+{% extends 'tests/layouts/base.html' %}
+
+{% block content %}
+
+<div class="pt-4 pb-4">
+  <h2>{{ title }}</h2>
+  {{ article.content|safe }}
+</div>
+
+{% endblock %}

@@ -26,6 +26,12 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
+    def get_short_content(self):
+        if len(self.content) > 150:
+            return self.content[:150] + "..."
+        else:
+            return self.content
+
     class Meta:
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
