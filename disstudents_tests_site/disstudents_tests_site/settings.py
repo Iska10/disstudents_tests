@@ -148,3 +148,5 @@ CKEDITOR_CONFIGS = {
     'default': {
     },
 }
+
+LOGIN_URL = '/login'

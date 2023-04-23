@@ -115,28 +115,28 @@ class TestFilter(AutocompleteFilter):
 
 
 # определяем поведение сущности "вопросы к тестам" в админке
-class QuestionAdmin(admin.ModelAdmin):
-    inlines = [AnswerInline]
-    fields = ('test', 'text', 'description')
-    list_select_related = ('test',)
-    list_display = ('id', 'test', 'text_preview', 'created_at', 'updated_at')
-    list_display_links = ('id', 'text_preview')
-    search_fields = ('id', 'text', 'test__title')
-    readonly_fields = ('created_at', 'updated_at')
-    list_filter = (TestFilter, )
-
-    # сокращаем текст вопроса при выводе в списках
-    def text_preview(self, obj):
-        if obj.text:
-            if len(obj.text) > 75:
-                return obj.text[:75] + "..."
-            else:
-                return obj.text
-        return ""
-    text_preview.short_description = 'вопрос'
-
-
-admin.site.register(Question, QuestionAdmin)
+# class QuestionAdmin(admin.ModelAdmin):
+#     inlines = [AnswerInline]
+#     fields = ('test', 'text', 'description')
+#     list_select_related = ('test',)
+#     list_display = ('id', 'test', 'text_preview', 'created_at', 'updated_at')
+#     list_display_links = ('id', 'text_preview')
+#     search_fields = ('id', 'text', 'test__title')
+#     readonly_fields = ('created_at', 'updated_at')
+#     list_filter = (TestFilter, )
+#
+#     # сокращаем текст вопроса при выводе в списках
+#     def text_preview(self, obj):
+#         if obj.text:
+#             if len(obj.text) > 75:
+#                 return obj.text[:75] + "..."
+#             else:
+#                 return obj.text
+#         return ""
+#     text_preview.short_description = 'вопрос'
+#
+#
+# admin.site.register(Question, QuestionAdmin)
 
 
 # class QuestionFilter(AutocompleteFilter):
@@ -185,9 +185,10 @@ class UserAnswerInline(StackedInline):
 
 # определяем поведение сущности "результаты пользователей" в админке
 class UserResultAdmin(NumericFilterModelAdmin):
-    fields = ('user', 'test', 'completed_at', 'result')
+    fields = ('user', 'test', 'result')
+    list_display_links = ('result', )
     list_select_related = ('user', 'test')
-    list_display = ('id', 'user', 'test', 'completed_at', 'result')
+    list_display = ('user', 'test', 'completed_at', 'result')
     search_fields = ('user__username', 'test__title')
     list_filter = (
         UserFilter, TestFilter,
@@ -201,6 +202,15 @@ class UserResultAdmin(NumericFilterModelAdmin):
             return [UserAnswerInline]
         else:
             return []
+
+    # def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+    #     context.update({
+    #         'show_save': False,
+    #         'show_save_and_continue': False,
+    #         'show_save_and_add_another': False,
+    #         'show_delete': False
+    #     })
+    #     return super().render_change_form(request, context, add, change, form_url, obj)
 
 
 admin.site.register(UserResult, UserResultAdmin)

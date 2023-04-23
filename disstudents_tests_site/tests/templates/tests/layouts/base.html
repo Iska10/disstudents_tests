@@ -63,7 +63,7 @@
                         <div class="collapse" id="category-{{ category.id }}-collapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
                                 {% for test in category.tests %}
-                                <li><a href="#" class="link-dark rounded">{{ test.title }}</a></li>
+                                <li><a href="{% url 'test' test.id %}" class="link-dark rounded">{{ test.title }}</a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -87,6 +87,7 @@
                     </ul>
                 </div>
             </div>
+
             <div id="content" class="col">
                 <div class="container-fluid" style="padding-right:15%">
                     {% block content %}

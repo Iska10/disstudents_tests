@@ -32,13 +32,6 @@
   <body class="text-center">
 
 <main class="form-signin">
-  {% if messages %}
-      {% for msg in messages %}
-      <div class="alert alert-{{msg.level_tag}} " role="alert">
-          {{msg.message}}
-      </div>
-      {% endfor %}
-  {% endif %}
   {% if form.non_field_errors %}
     <div class="alert alert-danger" role="alert">
         {% for error in form.non_field_errors %}

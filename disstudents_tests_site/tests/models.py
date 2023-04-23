@@ -155,7 +155,7 @@ class UserResult(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name='Тест')
-    completed_at = models.DateTimeField(blank=True, null=True, verbose_name='Дата прохождения')
+    completed_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='Дата прохождения')
     result = models.IntegerField(verbose_name='Результат (%)', default=1, validators=[
         MaxValueValidator(100),
         MinValueValidator(1)
