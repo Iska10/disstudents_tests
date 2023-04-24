@@ -16,10 +16,11 @@ def get_articles():
 @register.simple_tag()
 def get_categories():
     categories = []
-    for category in Category.objects.filter(is_published=True):
+    for category in Category.objects.annotate(num_tests=Count('test')).filter(is_published=True, num_tests__gte=1):
         # добавляем только те тесты, которые опубликованы
         # и у которых есть хотя бы 1 вопрос и ответ
         category.tests = Test.objects.annotate(num_questions=Count('question'), num_answers=Count('question__answer'))\
             .filter(is_published=True, category=category, num_questions__gte=1, num_answers__gte=1)
-        categories.append(category)
+        if category.tests:
+            categories.append(category)
     return categories

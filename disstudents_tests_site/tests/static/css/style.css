@@ -17,8 +17,13 @@ html, body {
   overflow-x: hidden;
 }
 
-@media (max-width: 970px) {
+@media (max-width: 1170px) {
   #sidebar {display: none;}
+  #navbar-mobile {display: flex;}
+}
+
+@media (min-width: 1171px) {
+  #navbar-mobile {display: none;}
 }
 
 .btn-toggle::before {

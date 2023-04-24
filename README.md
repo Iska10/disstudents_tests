@@ -4,6 +4,7 @@
 ## Требования
 - [Python 3.9.x](https://www.python.org/downloads/)
 - [Git](https://git-scm.com)
+- [Cloudinary](https://cloudinary.com)
 
 ## Деплой проекта
 
@@ -24,11 +25,28 @@ python -m venv venv
 ```
 pip install -r requirements.txt
 ```
-### 3. Настройка проекта (миграции, статичные файлы).
+### 3. Настройка проекта (env, миграции, статичные файлы).
 
 Переходим в папку приложения.
 ```
 cd disstudents_tests_site
+```
+
+Создаем файл настроек окружения из копии:
+```
+cp disstudents_tests_site\.env.dist disstudents_tests_site\.env
+```
+*(или просто вручную скопировать файл `.env.dist` и переименовать в `.env`)*
+
+Указываем настройки в этом файле, в том числе данные для подключения к облачному сервису-хранилищу медиа Cloudinary:
+```
+# при включенном дебаге - возможные ошибки выводятся
+DEBUG=False
+
+# Cloudinary
+CLOUDINARY_NAME="your name"
+CLOUDINARY_API_KEY="your api key"
+CLOUDINARY_API_SECRET="your api secret"
 ```
 
 Для настройки и заполнения базы данных с помощью миграций выполняем команды:

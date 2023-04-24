@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 
 
 class Article(models.Model):
@@ -156,9 +157,9 @@ class UserResult(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     test = models.ForeignKey(Test, on_delete=models.CASCADE, verbose_name='Тест')
     completed_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='Дата прохождения')
-    result = models.IntegerField(verbose_name='Результат (%)', default=1, validators=[
+    result = models.IntegerField(verbose_name='Результат (%)', default=0, validators=[
         MaxValueValidator(100),
-        MinValueValidator(1)
+        MinValueValidator(0)
     ])
 
     class Meta:
@@ -182,3 +183,33 @@ class UserAnswer(models.Model):
     class Meta:
         verbose_name = 'Ответ пользователя'
         verbose_name_plural = 'Ответы пользователя'
+
+
+class ResultMessage(models.Model):
+    """
+    Модель "Результирующие сообщения"
+
+    Attributes:
+        title: Заголовок результата
+        message: Сообщение результата
+        result_from: Градация (требуемое кол-во набранных баллов ОТ)
+        result_to: Градация (требуемое кол-во набранных баллов ДО)
+    """
+    title = models.CharField(max_length=255, verbose_name='Заголовок')
+    message = models.TextField(blank=True, null=True, verbose_name='Сообщение')
+    result_from = models.IntegerField(verbose_name='Результат от', default=0, help_text="Градация (требуемое кол-во набранных баллов ОТ)", validators=[
+        MaxValueValidator(100),
+        MinValueValidator(0)
+    ])
+    result_to = models.IntegerField(verbose_name='Результат до', default=0, help_text="Градация (требуемое кол-во набранных баллов ДО)", validators=[
+        MaxValueValidator(100),
+        MinValueValidator(0)
+    ])
+
+    class Meta:
+        verbose_name = 'Сообщение результатов'
+        verbose_name_plural = 'Сообщения результатов'
+
+    def clean(self):
+        if self.result_from > self.result_to:
+            raise ValidationError("Градации некорректны")

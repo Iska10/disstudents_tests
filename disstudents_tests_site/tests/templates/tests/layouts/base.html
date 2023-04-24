@@ -1,5 +1,7 @@
 {% load static %}
 {% load tests_tags %}
+{% get_articles as articles %}
+{% get_categories as categories %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -26,17 +28,43 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             </ul>
+               <div class="row" id="navbar-mobile">
+
+                  <div class="col">
+                      <ul id="articles-mobile" class="navbar-nav me-auto mb-2 mb-md-0">
+                          {% for article in articles %}
+                          <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{% url 'article' article.id %}">{{ article.title }}</a>
+                          </li>
+                          {% endfor %}
+                        </ul>
+                  </div>
+                   <div class="col">
+                       <ul id="tests-mobile" class="navbar-nav me-auto mb-2 mb-md-0">
+                           {% for category in categories %}
+                           <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">{{ category.title }}</a>
+                            <ul class="dropdown-menu">
+                                {% for test in category.tests %}
+                              <li><a class="dropdown-item" href="{% url 'test' test.id %}">{{ test.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                          </li>
+                       {% endfor %}
+                        </ul>
+                   </div>
+              </div>
             <form class="d-flex">
                 {% if not request.user.is_authenticated %}
                 <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
                 {% else %}
-                <span class="text-white pe-3 pt-2">
+                <a class="deco-none btn btn-outline-info text-white me-3 pt-2" href="{% url 'profile' %}">
                 {% if request.user.first_name or request.user.last_name %}
                 {{ request.user.first_name }} {{request.user.last_name}}
                 {% else %}
                 {{ request.user.username }}
                 {% endif %}
-                </span>
+                </a>
                 <a href="{% url 'logout' %}" class="btn btn-danger">Выйти <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M21 12L13 12" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M18 15L20.913 12.087V12.087C20.961 12.039 20.961 11.961 20.913 11.913V11.913L18 9" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -54,7 +82,6 @@
             <div id="sidebar" class="col-sm-2">
                 <div class="flex bg-white" style="border-right:1px solid rgb(221, 221, 221);">
                     <ul class="list-unstyled ps-0 ms-4 pt-3 fs-6">
-                        {% get_categories as categories %}
                         {% for category in categories %}
                         <li class="mb-1">
                         <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#category-{{ category.id }}-collapse" aria-expanded="false">
@@ -75,7 +102,6 @@
                             <span class="fs-6">Статьи</span>
                         </button>
                         <div class="collapse show" id="articles-collapse">
-                            {% get_articles as articles %}
 
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
                             {% for article in articles %}

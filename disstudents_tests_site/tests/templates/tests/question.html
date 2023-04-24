@@ -30,7 +30,7 @@
             <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
                 {% for answer in answers %}
                 <label class="options">{{ answer.text }}
-                    <input type="radio" name="answer" value="{{ answer.id }}">
+                    <input required type="radio" name="answer" value="{{ answer.id }}">
                     <span class="checkmark"></span>
                 </label>
                 {% endfor %}

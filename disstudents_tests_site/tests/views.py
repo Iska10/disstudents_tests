@@ -22,6 +22,7 @@ def show_article(request, article_id):
 # страница теста
 def show_test(request, test_id):
 
+    # получаем данные текущей сессии
     is_testing = request.session.get('is_testing', False)
     test_current_id = request.session.get('test_id', False)
     question_id = request.session.get('question_id', False)
@@ -31,12 +32,14 @@ def show_test(request, test_id):
         # делаем редирект на страницу текущего вопроса
         return redirect('question', test_id)
 
+    # получаем данные по тесту и проверяем что его категория опубликована
     test = get_object_or_404(Test, pk=test_id, category__is_published=True)
     return render(request, 'tests/test.html', {
         'title': test.title, 'test': test, 'is_testing': is_testing
     })
 
 
+# метод для очистки данных (о прохождении теста) для текущей сессии
 def clear_test(request):
     request.session.pop("test_id", None)
     request.session.pop("is_testing", None)
@@ -48,7 +51,7 @@ def clear_test(request):
 # страница вопроса теста
 @login_required
 def show_question(request, test_id):
-    # начать новый тест
+    # начать новый тест (не закончив другой)
     if test_id != request.session.get('test_id', False):
         clear_test(request)
 
@@ -74,6 +77,7 @@ def show_question(request, test_id):
     number = request.session.get('question_number', 1)
     total = Question.objects.filter(test=test_id).count()
 
+    # отрисовываем страницу с текущим вопросом
     return render(request, 'tests/question.html', {
         'title': question.test.title, 'question': question, 'number': number,
         'total': total, 'width': int(number / total * 100),
@@ -89,6 +93,7 @@ def make_answer(request):
     if request.method != 'POST':
         return redirect('index')
     if not form.is_valid():
+        # если ответ не был выбран - делаем возврат на ту же страницу вопроса
         return redirect('question', request.session.get('test_id'))
 
     # сохраняем ответ пользователя
@@ -119,24 +124,98 @@ def make_answer(request):
         if correct_answer.exists() and correct_answer[0].id == answer:
             user_result += 1
 
+    # сохраняем результат в базу данных
     user_result_created = UserResult(
         user=request.user, test_id=int(test),
         result=int(user_result/questions.count()*100)
     )
     user_result_created.save()
 
+    # сохраняем ответы пользователя на каждый вопрос
     for q, answer in answers.items():
         UserAnswer(
             user_result=user_result_created, question_id=q, answer_id=answer
         ).save()
 
+    # очищаем данные о текущем прохождении теста и отправляем на страницу результата
     clear_test(request)
+    return redirect('show_result', test, user_result_created.id)
 
-    return redirect('show_result', test)
+
+# страница результатов прохождения теста
+@login_required
+def result(request, test_id, result_id):
+    # получаем результаты заданного теста для текущего пользователя
+    user_result = get_object_or_404(
+        UserResult, pk=result_id, user=request.user, test=test_id
+    )
+    answers = []
+    i = 0
+    correct = 0
+
+    for answer in UserAnswer.objects.filter(
+        user_result=user_result
+    ):
+        # выставляем каждому ответу/вопросу порядковый номер
+        i += 1
+        answer.num = i
+        # и выставляем признак каждому ответу - был ли он правильный
+        try:
+            answer.correct = Answer.objects.get(
+                question=answer.question,
+                is_correct=True
+            )
+            answer.is_correct = answer.correct.id == answer.answer_id
+        except Answer.DoesNotExist:
+            answer.is_correct = False
+
+        if answer.is_correct:
+            correct += 1
+        answers.append(answer)
+
+    # определяем результирующее сообщение
+    message = ''
+    for m in ResultMessage.objects.all():
+       if m.result_from <= user_result.result <= m.result_to:
+           message = m
+
+    # выводим страницу с результатами по тесту
+    return render(request, 'tests/result.html', {
+        'result': user_result, 'title': user_result.test.title,
+        'answers': answers, 'result_message': message,
+        'total': len(answers), 'correct': correct
+    })
 
 
-def result(request, test_id):
-    return render(request, 'tests/result.html')
+# страница профиля пользователя
+@login_required
+def show_profile(request):
+    results = []
+    # получаем все результаты всех прохождений тестов пользователя
+    for res in UserResult.objects.filter(user=request.user).order_by('-completed_at'):
+        try:
+            res.correct = 0
+            answers = UserAnswer.objects.filter(user_result=res)
+            res.total = answers.count()
+            for answer in answers:
+                answer.correct = Answer.objects.get(
+                    question=answer.question,
+                    is_correct=True
+                )
+                # в пределах теста для каждого ответа определяем был ли он правильный
+                # и считаем общее кол-во правильных ответов
+                answer.is_correct = answer.correct.id == answer.answer_id
+                if answer.is_correct:
+                    res.correct += 1
+        except Answer.DoesNotExist:
+            pass
+        results.append(res)
+
+    # отображаем страницу профиля
+    return render(request, 'tests/profile.html', {
+        'title': 'Результаты',
+        'results': results
+    })
 
 
 # логика авторизации

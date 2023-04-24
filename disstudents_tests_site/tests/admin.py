@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from admin_numeric_filter.admin import NumericFilterModelAdmin, SingleNumericFilter, RangeNumericFilter
 
+
 # переопределяем класс AdminSite чтобы определить свой метод сортировки разделов
 # по-умолчанию - по алфавиту. делаем так - чтобы по мере добавления сущностей в этом файле
 class MyAdminSite(AdminSite):
@@ -31,6 +32,9 @@ class MyAdminSite(AdminSite):
 
 
 admin.site = MyAdminSite()
+admin.site.site_header = 'Информационная система контроля знаний обучающихся с ОВР'
+admin.site.index_title = 'Администрирование'
+admin.site.site_title = 'Информационная система контроля знаний обучающихся с ОВР'
 
 
 # определяем поведение сущности "статья" в админке
@@ -110,56 +114,14 @@ admin.site.register(Test, TestAdmin)
 
 # определяем фильтр по тестам
 class TestFilter(AutocompleteFilter):
-    title = 'Тест' # display title
-    field_name = 'test' # name of the foreign key field
+    title = 'Тест'
+    field_name = 'test'
 
-
-# определяем поведение сущности "вопросы к тестам" в админке
-# class QuestionAdmin(admin.ModelAdmin):
-#     inlines = [AnswerInline]
-#     fields = ('test', 'text', 'description')
-#     list_select_related = ('test',)
-#     list_display = ('id', 'test', 'text_preview', 'created_at', 'updated_at')
-#     list_display_links = ('id', 'text_preview')
-#     search_fields = ('id', 'text', 'test__title')
-#     readonly_fields = ('created_at', 'updated_at')
-#     list_filter = (TestFilter, )
-#
-#     # сокращаем текст вопроса при выводе в списках
-#     def text_preview(self, obj):
-#         if obj.text:
-#             if len(obj.text) > 75:
-#                 return obj.text[:75] + "..."
-#             else:
-#                 return obj.text
-#         return ""
-#     text_preview.short_description = 'вопрос'
-#
-#
-# admin.site.register(Question, QuestionAdmin)
-
-
-# class QuestionFilter(AutocompleteFilter):
-#     title = 'Вопрос' # display title
-#     field_name = 'question' # name of the foreign key field
-#
-#
-# class AnswerAdmin(admin.ModelAdmin):
-#     fields = ('question', 'text', 'is_correct')
-#     list_select_related = ('question',)
-#     list_display = ('id', 'question', 'text', 'is_correct', 'created_at', 'updated_at')
-#     list_display_links = ('id', 'text')
-#     search_fields = ('id', 'text')
-#     readonly_fields = ('created_at', 'updated_at')
-#     list_filter = (QuestionFilter, )
-#
-#
-# admin.site.register(Answer, AnswerAdmin)
 
 # определяем фильтр по пользователям
 class UserFilter(AutocompleteFilter):
-    title = 'Пользователь' # display title
-    field_name = 'user' # name of the foreign key field
+    title = 'Пользователь'
+    field_name = 'user'
 
 
 # определяем функционал для inline-редактирования связи "вопрос-ответ-тест"
@@ -215,6 +177,19 @@ class UserResultAdmin(NumericFilterModelAdmin):
 
 admin.site.register(UserResult, UserResultAdmin)
 
-#Регистрируем стандартные модели
+
+# определяем поведение сущности "сообщения результатов" в админке
+class ResultMessageAdmin(admin.ModelAdmin):
+    fields = ('title', 'message', 'result_from', 'result_to')
+    list_display_links = ('title', )
+    list_display = ('title', 'result_from', 'result_to')
+    search_fields = ('title', 'result_from', 'result_to')
+    ordering = ('-result_from', '-result_to')
+
+
+admin.site.register(ResultMessage, ResultMessageAdmin)
+
+
+# Регистрируем стандартные модели
 admin.site.register(Group, GroupAdmin)
 admin.site.register(User, UserAdmin)

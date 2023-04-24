@@ -1,0 +1,44 @@
+{% extends 'tests/layouts/base.html' %}
+
+{% block content %}
+
+<div class="p-4 pb-2 mt-5 bg-light rounded-3">
+  <div class="container-fluid py-5">
+    <h1 class="display-5 fw-bold">Результаты тестов</h1>
+    <p class="col-md-8 fs-4">На данной странице вы можете ознакомиться с результатами пройденных Вами тестов, а также попробовать повторить их прохождение.</p>
+  </div>
+</div>
+{% if not results %}
+<br>
+<h4>Вы еще не прошли ни одного теста.</h4>
+{% else %}
+<table class="table table-hover table-bordered mt-3 fs-6">
+  <thead class="table-secondary">
+    <tr class="result-heading text-center mb-2">
+      <th class="text-center" style="width:25%;">Дата прохождения</th>
+      <th class="text-center" style="width:55%">Название теста</th>
+      <th class="text-center" style="width:25%">Результат</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for result in results %}
+    <tr onclick="window.location='{% url 'show_result' result.test.id result.id %}';" class="result-row {% if result.correct == result.total %} table-success{% endif %}">
+      <td>{{ result.completed_at|date:"DATETIME_FORMAT" }}</td>
+      <td style="height:65px;"><b>{{ result.test.category.title }}</b> {{ result.test.title }}</td>
+      <td>{{ result.correct }} / {{ result.total }} <b>({{ result.result }}%)</b></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+<style>
+  tr.result-row:hover { cursor: pointer; }
+
+  tr.result-heading {
+   line-height: 47px;
+   min-height: 47px;
+   height: 47px;
+}
+</style>
+
+{% endblock %}
