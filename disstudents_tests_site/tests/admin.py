@@ -39,7 +39,7 @@ admin.site.site_title = 'Информационная система контр�
 
 # определяем поведение сущности "статья" в админке
 class ArticleAdmin(admin.ModelAdmin):
-    fields = ('title', 'image', 'image_preview', 'content', 'is_published')
+    fields = ('title', 'image', 'image_preview', 'description', 'content', 'is_published')
     list_display = ('id', 'title', 'image_preview', 'is_published', 'created_at', 'updated_at')
     list_display_links = ('id', 'title')
     search_fields = ('id', 'title')

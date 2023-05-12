@@ -10,7 +10,7 @@
     </div>
 {% endif %}
 
-<div class="pt-4 pb-4 text-center">
+<div class="pt-4 pb-4 text-center bvi-speech">
   <h2>Тест "{{ question.test.title }}"</h2>
   <span>Вопрос ({{ number }}/{{ total }})</span>
     <div class="progress mt-3">
@@ -25,9 +25,9 @@
     <form action="{% url 'make_answer' %}" method="post">
     {% csrf_token %}
         <div class="question ml-sm-5 pl-sm-5 pt-2">
-            <div class="py-2 h5"><b>{{ question.text }}</b></div>
+            <div class="py-2 h5 bvi-speech"><b>{{ question.text }}</b></div>
 
-            <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
+            <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3 bvi-hide" id="options">
                 {% for answer in answers %}
                 <label class="options">{{ answer.text }}
                     <input required type="radio" name="answer" value="{{ answer.id }}">
@@ -36,8 +36,16 @@
                 {% endfor %}
             </div>
 
+            <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3 bvi-show bvi-speech" style="display:none">
+                {% for answer in answers %}
+                <label>
+                    <input style="height:35px; width:35px; vertical-align: middle;" required type="radio" name="answer" value="{{ answer.id }}"> {{ answer.text }}
+                </label><br>
+                {% endfor %}
+            </div>
+
         </div>
-        <div class="question-buttons float-end">
+        <div class="question-buttons float-end bvi-speech">
         <button class="btn btn-success align-items-center float-end" type="submit">Далее <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
         </svg>

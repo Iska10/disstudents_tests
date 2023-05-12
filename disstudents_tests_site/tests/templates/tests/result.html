@@ -2,26 +2,26 @@
 
 {% block content %}
 
-<div class="pt-4 pb-4">
+<div class="pt-4 pb-4 bvi-speech">
 <h2>Результаты теста "{{ result.test.title }}"</h2>
   <span>Был пройден: {{ result.completed_at|date:"DATETIME_FORMAT" }}</span>
 </div>
 {% if result_message %}
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-primary bvi-speech" role="alert">
   <h4 class="alert-heading">{{ result_message.title }}</h4>
   <p>{{ result_message.message }}</p>
   <hr>
   <p class="mb-0">Количество баллов: {{ correct }}/{{ total }} <b>({{ result.result }}%)</b></p>
 </div>
 {% else %}
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-primary bvi-speech" role="alert">
   <h4 class="alert-heading">Так держать!</h4>
   <p>Вы завершили тест на определенный результат. Ниже можно ознакомиться с правильными / неправильными ответами, а также попытаться пройти тест еще раз.</p>
   <hr>
   <p class="mb-0">Количество баллов: {{ correct }}/{{ total }} <b>({{ result.result }}%)</b></p>
 </div>
 {% endif %}
-<div class="accordion" id="accordionExample">
+<div class="accordion bvi-speech" id="accordionExample">
     {% for answer in answers %}
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingOne">
@@ -44,7 +44,7 @@
     {% endfor %}
 </div>
 <br>
-<div class="d-grid gap-2">
+<div class="d-grid gap-2 bvi-speech">
   <a href="{% url 'test' result.test.id %}" class="btn btn-primary">Попробовать еще раз</a>
     <a href="{% url 'profile' %}" class="btn btn-outline-secondary">Все результаты</a>
 </div>

@@ -19,6 +19,7 @@ class Article(models.Model):
     """
     title = models.CharField(max_length=255, verbose_name='Наименование')
     image = models.ImageField(upload_to='images/articles/', blank=True, null=True, verbose_name='Изображение')
+    description = models.TextField(blank=True, null=True, verbose_name='Краткое содержание')
     content = RichTextUploadingField(blank=True, null=True, verbose_name='Основной контент')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
@@ -28,6 +29,8 @@ class Article(models.Model):
         return self.title
 
     def get_short_content(self):
+        if self.description:
+            return self.description
         if len(self.content) > 150:
             return self.content[:150] + "..."
         else:
