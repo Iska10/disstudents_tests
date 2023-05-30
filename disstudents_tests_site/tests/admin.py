@@ -32,9 +32,9 @@ class MyAdminSite(AdminSite):
 
 
 admin.site = MyAdminSite()
-admin.site.site_header = 'Информационная система контроля знаний обучающихся с ОВР'
+admin.site.site_header = 'Информационная система контроля знаний обучающихся с ОВЗ'
 admin.site.index_title = 'Администрирование'
-admin.site.site_title = 'Информационная система контроля знаний обучающихся с ОВР'
+admin.site.site_title = 'Информационная система контроля знаний обучающихся с ОВЗ'
 
 
 # определяем поведение сущности "статья" в админке
